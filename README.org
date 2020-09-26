@@ -8,3 +8,16 @@ Simply load the file and pdf-tools will start up in continuous scroll mode. You 
 Of course any feedback is welcome (possibly by opening an issue in the repo).
 
 [[pdf-continuous-scroll-demo.gif]]
+
+** Keybindings
+| Emacs | Spacemacs | Function                            |
+|-------+-----------+-------------------------------------|
+| =C-n=   | =j=         | pdf-continuous-scroll-forward       |
+| =C-p=   | =k=         | pdf-continuous-scroll-backward      |
+| =n=     | =J=         | pdf-continuous-next-page            |
+| =p=     | =K=         | pdf-continuous-previous-page        |
+| =M-<=   | =g g=       | pdf-cscroll-first-page              |
+| =M->=   | =G=         | pdf-cscroll-last-page               |
+| =T=     | =M=         | pdf-cscroll-toggle-mode-line        |
+| =M=     |           | pdf-cscroll-toggle-narrow-mode-line |
+| =Q=     | =Q=         | pdf-cscroll-kill-buffer-and-windows |
