@@ -168,6 +168,30 @@ at the top edge of the page moves to the previous page."
   (pdf-cscroll-close-window-when-dual)
   (kill-this-buffer))
 
+(defun pdf-cscroll-toggle-mode-line ()
+  (interactive)
+  (if (not mode-line-format)
+      (setq mode-line-format pdf-cscroll-mode-line-format)
+    (setq pdf-cscroll-mode-line-format mode-line-format)
+    (setq mode-line-format nil)))
+
+(defun pdf-cscroll-toggle-narrow-mode-line ()
+  (interactive)
+  (if (plist-get (custom-face-attributes-get 'mode-line (selected-frame)) :height)
+      (custom-set-faces
+       (list 'mode-line
+             (list
+              (list t pdf-cscroll-mode-line-original-face))))
+    (setq pdf-cscroll-mode-line-original-face
+          (custom-face-attributes-get 'mode-line (selected-frame)))
+    (custom-set-faces
+     ;; custom-set-faces was added by Custom.
+     ;; If you edit it by hand, you could mess it up, so be careful.
+     ;; Your init file should contain only one such instance.
+     ;; If there is more than one, they won't work right.
+     '(mode-line ((t (:background "black" :height 0.1)))))
+    ))
+
 (setq pdf-continuous-scroll-mode-map (make-sparse-keymap))
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-n") #'pdf-continuous-scroll-forward)
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-p") #'pdf-continuous-scroll-backward)
@@ -175,6 +199,8 @@ at the top edge of the page moves to the previous page."
 (define-key pdf-continuous-scroll-mode-map  "p" #'pdf-continuous-previous-page)
 (define-key pdf-continuous-scroll-mode-map  (kbd "M-<") #'pdf-cscroll-first-page)
 (define-key pdf-continuous-scroll-mode-map  (kbd "M->") #'pdf-cscroll-last-page)
+(define-key pdf-continuous-scroll-mode-map  "T" #'pdf-cscroll-toggle-mode-line)
+(define-key pdf-continuous-scroll-mode-map  "M" #'pdf-cscroll-toggle-narrow-mode-line)
 (define-key pdf-continuous-scroll-mode-map  "Q" #'pdf-cscroll-kill-buffer-and-windows)
 
 
@@ -186,6 +212,7 @@ at the top edge of the page moves to the previous page."
     "K" #'pdf-continuous-previous-page
     (kbd "g g") #'pdf-cscroll-first-page
     "G" #'pdf-cscroll-last-page
+    "M" #'pdf-cscroll-toggle-mode-line
     "Q" #'pdf-cscroll-kill-buffer-and-windows))
 
 (define-minor-mode pdf-continuous-scroll-mode
