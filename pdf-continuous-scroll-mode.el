@@ -163,13 +163,20 @@ at the top edge of the page moves to the previous page."
   (pdf-cscroll-close-window-when-dual)
   (pdf-view-goto-page (pdf-cache-number-of-pages)))
 
+(defun pdf-cscroll-kill-buffer-and-windows ()
+  (interactive)
+  (pdf-cscroll-close-window-when-dual)
+  (kill-this-buffer))
+
 (setq pdf-continuous-scroll-mode-map (make-sparse-keymap))
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-n") #'pdf-continuous-scroll-forward)
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-p") #'pdf-continuous-scroll-backward)
-(define-key pdf-continuous-scroll-mode-map  (kbd "n") #'pdf-continuous-next-page)
-(define-key pdf-continuous-scroll-mode-map  (kbd "p") #'pdf-continuous-previous-page)
+(define-key pdf-continuous-scroll-mode-map  "n" #'pdf-continuous-next-page)
+(define-key pdf-continuous-scroll-mode-map  "p" #'pdf-continuous-previous-page)
 (define-key pdf-continuous-scroll-mode-map  (kbd "M-<") #'pdf-cscroll-first-page)
 (define-key pdf-continuous-scroll-mode-map  (kbd "M->") #'pdf-cscroll-last-page)
+(define-key pdf-continuous-scroll-mode-map  "Q" #'pdf-cscroll-kill-buffer-and-windows)
+
 
 (when (boundp 'spacemacs-version)
   (evil-define-minor-mode-key 'evilified 'pdf-continuous-scroll-mode
@@ -178,7 +185,8 @@ at the top edge of the page moves to the previous page."
     "J" #'pdf-continuous-next-page
     "K" #'pdf-continuous-previous-page
     (kbd "g g") #'pdf-cscroll-first-page
-    "G" #'pdf-cscroll-last-page))
+    "G" #'pdf-cscroll-last-page
+    "Q" #'pdf-cscroll-kill-buffer-and-windows))
 
 (define-minor-mode pdf-continuous-scroll-mode
   "Emulate continuous scroll with two synchronized buffers"
