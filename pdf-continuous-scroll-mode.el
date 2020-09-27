@@ -153,6 +153,21 @@ at the top edge of the page moves to the previous page."
                    (pdf-view-previous-page arg)))
                 (t (pdf-view-previous-page)))))))
 
+(defun pdf-cscroll-view-goto-page (page &optional window)
+  "Go to PAGE in PDF.
+
+If optional parameter WINDOW, go to PAGE in all `pdf-view'
+windows."
+  (interactive
+   (list (if current-prefix-arg
+             (prefix-numeric-value current-prefix-arg)
+           (read-number "Page: "))))
+  (unless (and (>= page 1)
+               (<= page (pdf-cache-number-of-pages)))
+    (error "No such page: %d" page))
+  (pdf-cscroll-close-window-when-dual)
+  (pdf-view-goto-page page))
+
 (defun pdf-cscroll-first-page ()
   (interactive)
   (pdf-cscroll-close-window-when-dual)
@@ -192,16 +207,26 @@ at the top edge of the page moves to the previous page."
      '(mode-line ((t (:background "black" :height 0.1)))))
     ))
 
+(defun pdf-cscroll-annot-list-annotations ()
+  (interactive)
+  (pdf-cscroll-close-window-when-dual)
+  (pdf-annot-list-annotations))
+
+
 (setq pdf-continuous-scroll-mode-map (make-sparse-keymap))
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-n") #'pdf-continuous-scroll-forward)
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-p") #'pdf-continuous-scroll-backward)
 (define-key pdf-continuous-scroll-mode-map  "n" #'pdf-continuous-next-page)
 (define-key pdf-continuous-scroll-mode-map  "p" #'pdf-continuous-previous-page)
+;; (define-key pdf-continuous-scroll-mode-map  (kbd "M-<") #'pdf-cscroll-view-goto-page)
+(define-key pdf-continuous-scroll-mode-map  (kbd "M-g g") #'pdf-cscroll-view-goto-page)
+(define-key pdf-continuous-scroll-mode-map  (kbd "M-g M-g") #'pdf-cscroll-view-goto-page)
 (define-key pdf-continuous-scroll-mode-map  (kbd "M-<") #'pdf-cscroll-first-page)
 (define-key pdf-continuous-scroll-mode-map  (kbd "M->") #'pdf-cscroll-last-page)
 (define-key pdf-continuous-scroll-mode-map  "T" #'pdf-cscroll-toggle-mode-line)
 (define-key pdf-continuous-scroll-mode-map  "M" #'pdf-cscroll-toggle-narrow-mode-line)
 (define-key pdf-continuous-scroll-mode-map  "Q" #'pdf-cscroll-kill-buffer-and-windows)
+(define-key pdf-continuous-scroll-mode-map  (kbd "C-c C-a l") #'pdf-cscroll-annot-list-annotations)
 
 
 (when (boundp 'spacemacs-version)
@@ -210,10 +235,14 @@ at the top edge of the page moves to the previous page."
     "k" #'pdf-continuous-scroll-backward
     "J" #'pdf-continuous-next-page
     "K" #'pdf-continuous-previous-page
+    (kbd "g t") #'pdf-cscroll-view-goto-page
     (kbd "g g") #'pdf-cscroll-first-page
     "G" #'pdf-cscroll-last-page
     "M" #'pdf-cscroll-toggle-mode-line
-    "Q" #'pdf-cscroll-kill-buffer-and-windows))
+    "Q" #'pdf-cscroll-kill-buffer-and-windows)
+  (spacemacs/set-leader-keys-for-minor-mode
+    'pdf-continuous-scroll-mode
+    (kbd "a l") #'pdf-cscroll-annot-list-annotations))
 
 (define-minor-mode pdf-continuous-scroll-mode
   "Emulate continuous scroll with two synchronized buffers"
