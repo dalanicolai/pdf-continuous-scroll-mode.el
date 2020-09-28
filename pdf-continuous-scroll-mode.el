@@ -1,5 +1,3 @@
-(add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
-
 (defun pdf-cscroll-window-dual-p ()
   "Return t if current scroll window status is dual, else nil."
     (or (equal 'upper (alist-get 'pdf-scroll-window-status (window-parameters)))
@@ -183,6 +181,36 @@ windows."
   (pdf-cscroll-close-window-when-dual)
   (kill-this-buffer))
 
+(defun pdf-cscroll-image-forward-hscroll (&optional n)
+  (interactive "p")
+  (let ((window-status (alist-get 'pdf-scroll-window-status (window-parameters))))
+    (cond ((equal window-status 'upper)
+           (windmove-down)
+           (image-forward-hscroll n)
+           (windmove-up)
+           (image-forward-hscroll n))
+          ((equal window-status 'lower)
+           (windmove-up)
+           (image-forward-hscroll n)
+           (windmove-down)
+           (image-forward-hscroll n))
+          (t (image-forward-hscroll n)))))
+
+(defun pdf-cscroll-image-backward-hscroll (&optional n)
+  (interactive "p")
+  (let ((window-status (alist-get 'pdf-scroll-window-status (window-parameters))))
+    (cond ((equal window-status 'upper)
+           (windmove-down)
+           (image-forward-hscroll (- n))
+           (windmove-up)
+           (image-forward-hscroll (- n)))
+          ((equal window-status 'lower)
+           (windmove-up)
+           (image-forward-hscroll (- n))
+           (windmove-down)
+           (image-forward-hscroll (- n))
+           (t (image-forward-hscroll))))))
+
 (defun pdf-cscroll-toggle-mode-line ()
   (interactive)
   (if (not mode-line-format)
@@ -215,7 +243,9 @@ windows."
 
 (setq pdf-continuous-scroll-mode-map (make-sparse-keymap))
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-n") #'pdf-continuous-scroll-forward)
+(define-key pdf-continuous-scroll-mode-map  (kbd "<down>") #'pdf-continuous-scroll-forward)
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-p") #'pdf-continuous-scroll-backward)
+(define-key pdf-continuous-scroll-mode-map  (kbd "<up>") #'pdf-continuous-scroll-backward)
 (define-key pdf-continuous-scroll-mode-map  "n" #'pdf-continuous-next-page)
 (define-key pdf-continuous-scroll-mode-map  "p" #'pdf-continuous-previous-page)
 ;; (define-key pdf-continuous-scroll-mode-map  (kbd "M-<") #'pdf-cscroll-view-goto-page)
@@ -223,6 +253,10 @@ windows."
 (define-key pdf-continuous-scroll-mode-map  (kbd "M-g M-g") #'pdf-cscroll-view-goto-page)
 (define-key pdf-continuous-scroll-mode-map  (kbd "M-<") #'pdf-cscroll-first-page)
 (define-key pdf-continuous-scroll-mode-map  (kbd "M->") #'pdf-cscroll-last-page)
+(define-key pdf-continuous-scroll-mode-map  [remap forward-char] #'pdf-cscroll-image-forward-hscroll)
+(define-key pdf-continuous-scroll-mode-map  [remap right-char] #'pdf-cscroll-image-forward-hscroll)
+(define-key pdf-continuous-scroll-mode-map  [remap backward-char] #'pdf-cscroll-image-backward-hscroll)
+(define-key pdf-continuous-scroll-mode-map  [remap left-char] #'pdf-cscroll-image-backward-hscroll)
 (define-key pdf-continuous-scroll-mode-map  "T" #'pdf-cscroll-toggle-mode-line)
 (define-key pdf-continuous-scroll-mode-map  "M" #'pdf-cscroll-toggle-narrow-mode-line)
 (define-key pdf-continuous-scroll-mode-map  "Q" #'pdf-cscroll-kill-buffer-and-windows)
@@ -239,7 +273,9 @@ windows."
     (kbd "g g") #'pdf-cscroll-first-page
     "G" #'pdf-cscroll-last-page
     "M" #'pdf-cscroll-toggle-mode-line
-    "Q" #'pdf-cscroll-kill-buffer-and-windows)
+    "Q" #'pdf-cscroll-kill-buffer-and-windows
+    "l" #'pdf-cscroll-image-forward-hscroll
+    "h" #'pdf-cscroll-image-backward-hscroll)
   (spacemacs/set-leader-keys-for-minor-mode
     'pdf-continuous-scroll-mode
     (kbd "a l") #'pdf-cscroll-annot-list-annotations))
