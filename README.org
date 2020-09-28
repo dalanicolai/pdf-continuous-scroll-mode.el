@@ -11,7 +11,7 @@ toggle the mode on and of using =M-x pdf-continuous-scroll-mode=.
 If you defer loading of pdf-tools then you can use the lines
 #+begin_src emacs-lisp :tangle yes
   (eval-after-load "pdf-view"
-    (load "~/git/pdf-continuous-scroll-mode.el/pdf-continuous-scroll-mode.el"))
+    (require "~/git/pdf-continuous-scroll-mode.el/pdf-continuous-scroll-mode.el"))
 #+end_src
 to defer the loading of the continuoud scroll mode file. If you like to to start
 pdf-tools with the minor mode activated then add a hook by placing the following

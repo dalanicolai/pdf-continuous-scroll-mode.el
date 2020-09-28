@@ -288,3 +288,5 @@ windows."
   (unless pdf-continuous-scroll-mode
     (pdf-cscroll-close-window-when-dual))
   (set-window-parameter nil 'pdf-scroll-window-status 'single))
+
+(provide 'pdf-continuous-scroll-mode)
