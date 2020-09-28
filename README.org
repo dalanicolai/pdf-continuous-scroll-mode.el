@@ -6,18 +6,27 @@ Probably this minor-mode will get updated a few times over the next days, so
 keep your eyes on it. This mode works only from Emacs 27 (see [[https://github.com/politza/pdf-tools/issues/27#issuecomment-696237353][here]]). It includes
 keybindings to just work also on Spacemacs.
 
-Simply load the file and pdf-tools will start up in continuous scroll mode. You
-can then just toggle the mode on and of using =M-x pdf-continuous-scroll-mode=. If
-you don't want to start pdf-tools with the minor mode activated then comment out
-the hook at the start of =pdf-continuous-scroll-mode.el=.
+Simply load the file then open a file in pdf-tools where you can then just
+toggle the mode on and of using =M-x pdf-continuous-scroll-mode=.
+If you defer loading of pdf-tools then you can use the lines
+#+begin_src emacs-lisp :tangle yes
+  (eval-after-load "pdf-view"
+    (load "~/git/pdf-continuous-scroll-mode.el/pdf-continuous-scroll-mode.el"))
+#+end_src
+to defer the loading of the continuoud scroll mode file. If you like to to start
+pdf-tools with the minor mode activated then add a hook by placing the following
+lines in your dotfile:
+#+begin_src emacs-lisp :tangle yes
+(add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
+#+end_src 
 
 Of course any feedback is welcome (possibly by opening an issue in the repo).
 
 [[pdf-continuous-scroll-demo.gif]]
 
 ** Keybindings
-| Emacs         | Spacemacs         | Function                            |
-|---------------+-------------------+-------------------------------------|
+| Emacs           | Spacemacs           | Function                            |
+|-----------------+---------------------+-------------------------------------|
 | =C-n=           | =j=                 | pdf-continuous-scroll-forward       |
 | =C-p=           | =k=                 | pdf-continuous-scroll-backward      |
 | =n=             | =J=                 | pdf-continuous-next-page            |
@@ -25,7 +34,9 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
 | =M-g g/M-g M-g= | =g t=               | pdf-cscroll-view-goto-page          |
 | =M-<=           | =g g=               | pdf-cscroll-first-page              |
 | =M->=           | =G=                 | pdf-cscroll-last-page               |
-| =T=             | =M=                 | pdf-cscroll-toggle-mode-line        |
-| =M=             |                   | pdf-cscroll-toggle-narrow-mode-line |
 | =Q=             | =Q=                 | pdf-cscroll-kill-buffer-and-windows |
+| =C-f=           | =l=                 | pdf-cscroll-image-forward-hscroll   |
+| =C-b=           | =h=                 | pdf-cscroll-image-backward-hscroll  |
+| =T=             | =M=                 | pdf-cscroll-toggle-mode-line        |
+| =M=             |                     | pdf-cscroll-toggle-narrow-mode-line |
 | =C-c C-a l=     | =SPC m a l (, a l)= | pdf-cscroll-annot-list-annotations  |
