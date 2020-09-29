@@ -2,20 +2,28 @@
 A minor mode for Emacs that implements a two-buffer hack to provide continuous
 scrolling in pdf-tools
 
-Probably this minor-mode will get updated a few times over the next days, so
-keep your eyes on it. This mode works only from Emacs 27 (see [[https://github.com/politza/pdf-tools/issues/27#issuecomment-696237353][here]]). It includes
-keybindings to just work also on Spacemacs.
+This mode works only from Emacs 27 (see [[https://github.com/politza/pdf-tools/issues/27#issuecomment-696237353][here]]). It includes keybindings to just
+work also on Spacemacs.
 
-Simply load the file then open a file in pdf-tools where you can then just
-toggle the mode on and of using =M-x pdf-continuous-scroll-mode=.
-If you defer loading of pdf-tools then you can use the lines
-#+begin_src emacs-lisp :tangle yes
-  (eval-after-load "pdf-view"
-    (require "~/git/pdf-continuous-scroll-mode.el/pdf-continuous-scroll-mode.el"))
+Probably this minor-mode will get updated a few times over the next days so keep
+your eyes on it, or install it using a [[https://github.com/quelpa/quelpa#by-recipe][Quelpa recipe]]. Spacemacs users can
+install the package (using Quelpa) by adding the following lines to the list of
+=additional packages= in their .spacemacs file:
+#+begin_src emacs-lisp
+  (pdf-continuous-scroll-mode :location (recipe
+                                         :fetcher github
+                                         :repo "dalanicolai/pdf-continuous-scroll-mode.el"))
 #+end_src
-to defer the loading of the continuoud scroll mode file. If you like to to start
-pdf-tools with the minor mode activated then add a hook by placing the following
-lines in your dotfile:
+(the compiler warnings can be ignored and will probably get fixed soon).
+Subsequently load the file or add the following lines to your dotfile:
+#+begin_src emacs-lisp
+  (eval-after-load "pdf-view"
+    (require 'pdf-continuous-scroll-mode))
+#+end_src
+Then when you open a file in pdf-tools you can just toggle the mode on and
+of using =M-x pdf-continuous-scroll-mode=. If you like to to start pdf-tools with
+the minor mode activated then add a hook by placing the following lines in your
+dotfile:
 #+begin_src emacs-lisp :tangle yes
 (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
 #+end_src 
@@ -49,4 +57,4 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
     A package to create and attach Table of contents to pdf and djvu documents.
     There is also a [[https://github.com/dalanicolai/toc-layer][toc-layer for Spacemacs]]
 *** calibredb https://melpa.org/#/calibredb
-    A super nice calibre frontend within Emacs
+    A super nice [[https://calibre-ebook.com/][calibre]] frontend within Emacs
