@@ -26,6 +26,13 @@
 ;; Usage:
 
 ;;; Code:
+(eval-when-compile
+  (require 'pdf-view))
+(require 'pdf-annot)
+
+(defvar pdf-cscroll-mode-line-format)
+(defvar pdf-cscroll-mode-line-original-face)
+
 (defun pdf-cscroll-window-dual-p ()
   "Return t if current scroll window status is dual, else nil."
     (or (equal 'upper (alist-get 'pdf-scroll-window-status (window-parameters)))
@@ -192,7 +199,7 @@ windows."
                (<= page (pdf-cache-number-of-pages)))
     (error "No such page: %d" page))
   (pdf-cscroll-close-window-when-dual)
-  (pdf-view-goto-page page))
+  (pdf-view-goto-page page window))
 
 (defun pdf-cscroll-first-page ()
   (interactive)
@@ -236,8 +243,8 @@ windows."
            (windmove-up)
            (image-forward-hscroll (- n))
            (windmove-down)
-           (image-forward-hscroll (- n))
-           (t (image-forward-hscroll))))))
+           (image-forward-hscroll (- n)))
+          (t (image-forward-hscroll)))))
 
 (defun pdf-cscroll-toggle-mode-line ()
   (interactive)

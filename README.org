@@ -14,10 +14,9 @@ install the package (using Quelpa) by adding the following lines to the list of
                                          :fetcher github
                                          :repo "dalanicolai/pdf-continuous-scroll-mode.el"))
 #+end_src
-(the compiler warnings can be ignored and will probably get fixed soon).
 Subsequently load the file or add the following lines to your dotfile:
 #+begin_src emacs-lisp
-  (eval-after-load "pdf-view"
+  (with-eval-after-load 'pdf-view
     (require 'pdf-continuous-scroll-mode))
 #+end_src
 Then when you open a file in pdf-tools you can just toggle the mode on and
