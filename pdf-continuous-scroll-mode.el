@@ -279,8 +279,10 @@ windows."
 (setq pdf-continuous-scroll-mode-map (make-sparse-keymap))
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-n") #'pdf-continuous-scroll-forward)
 (define-key pdf-continuous-scroll-mode-map  (kbd "<down>") #'pdf-continuous-scroll-forward)
+(define-key pdf-continuous-scroll-mode-map  (kbd "<mouse-4>") #'pdf-continuous-scroll-forward)
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-p") #'pdf-continuous-scroll-backward)
 (define-key pdf-continuous-scroll-mode-map  (kbd "<up>") #'pdf-continuous-scroll-backward)
+(define-key pdf-continuous-scroll-mode-map  (kbd "<mouse-5>") #'pdf-continuous-scroll-backward)
 (define-key pdf-continuous-scroll-mode-map  "n" #'pdf-continuous-next-page)
 (define-key pdf-continuous-scroll-mode-map  "p" #'pdf-continuous-previous-page)
 ;; (define-key pdf-continuous-scroll-mode-map  (kbd "M-<") #'pdf-cscroll-view-goto-page)
@@ -301,7 +303,9 @@ windows."
 (when (boundp 'spacemacs-version)
   (evil-define-minor-mode-key 'evilified 'pdf-continuous-scroll-mode
     "j" #'pdf-continuous-scroll-forward
+    (kbd "<mouse-5>") #'pdf-continuous-scroll-forward
     "k" #'pdf-continuous-scroll-backward
+    (kbd "<mouse-4>") #'pdf-continuous-scroll-backward
     "J" #'pdf-continuous-next-page
     "K" #'pdf-continuous-previous-page
     (kbd "g t") #'pdf-cscroll-view-goto-page
