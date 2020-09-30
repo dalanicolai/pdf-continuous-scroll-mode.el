@@ -57,6 +57,10 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
    might prefer to just narrow down the mode-line using
    ~pdf-cscroll-toggle-narrow-mode-line~.
 
+*** Related: double page layout
+    [[https://github.com/politza/pdf-tools/issues/303#issuecomment-397744326][In this comment]] the user *apnewberry* posted code to realize a double page layout
+    (and apparently he suggested this pdf-continuous-scroll-hack before)
+   
 ** Related projects
 *** djvu2 https://github.com/dalanicolai/djvu2.el
     Show djvu annotations within Emacs (extending [[https://github.com/emacsmirror/djvu/blob/master/djvu.el][djvu.el]]). There is also a
