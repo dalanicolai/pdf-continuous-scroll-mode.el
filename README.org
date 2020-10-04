@@ -27,6 +27,9 @@ dotfile:
 (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
 #+end_src 
 
+You can set the scroll step size via the customizable variable
+=pdf-continuous-step-size=.
+
 Of course any feedback is welcome (possibly by opening an issue in the repo).
 [[pdf-continuous-scroll-demo.gif]]
 
@@ -70,3 +73,4 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
     There is also a [[https://github.com/dalanicolai/toc-layer][toc-layer for Spacemacs]]
 *** calibredb https://melpa.org/#/calibredb
     A super nice [[https://calibre-ebook.com/][calibre]] frontend within Emacs
+*** handy or fun Emacs lisp functions https://github.com/dalanicolai/dala-emacs-lisp

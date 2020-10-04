@@ -33,6 +33,10 @@
 (defvar pdf-cscroll-mode-line-format)
 (defvar pdf-cscroll-mode-line-original-face)
 
+(defcustom pdf-continuous-step-size 4
+  "Step size in lines (integer) for continuous scrolling"
+  :type 'integer)
+
 (defun pdf-cscroll-window-dual-p ()
   "Return t if current scroll window status is dual, else nil."
     (or (equal 'upper (alist-get 'pdf-scroll-window-status (window-parameters)))
@@ -48,12 +52,13 @@
         (delete-window)
         (set-window-parameter nil 'pdf-scroll-window-status 'single)))))
 
-(defun pdf-continuous-scroll-forward (&optional arg)
+(defun pdf-continuous-scroll-forward-line (&optional arg)
   "Scroll upward by ARG lines if possible, else go to the next page.
-
-When `pdf-view-continuous' is non-nil, scrolling a line upward
-at the bottom edge of the page moves to the next page."
-  (interactive "p")
+This function is an adapted version of
+`pdf-view-next-line-or-next-page'. Although the ARG is kept here,
+this function generally works best without ARG is 1. To increase
+the step size for scrolling use the ARG in
+`pdf-continuous-scroll-forward'"
   (if pdf-continuous-scroll-mode
          (let ((hscroll (window-hscroll))
                (cur-page (pdf-view-current-page)))
@@ -92,12 +97,18 @@ at the bottom edge of the page moves to the next page."
                  (image-next-line 1))))))
     (message "pdf-continuous-scroll-mode not activated")))
 
-(defun pdf-continuous-scroll-backward (&optional arg)
-  "Scroll downward by ARG lines if possible, else go to the previous page.
+(defun pdf-continuous-scroll-forward (arg)
+  (interactive "P")
+  (let ((arg (or arg pdf-continuous-step-size)))
+    (dotimes (_ arg) (pdf-continuous-scroll-forward-line 1))))
 
-When `pdf-view-continuous' is non-nil, scrolling a line downward
-at the top edge of the page moves to the previous page."
-  (interactive "p")
+(defun pdf-continuous-scroll-backward-line (&optional arg)
+  "Scroll down by ARG lines if possible, else go to the previous page.
+This function is an adapted version of
+`pdf-view-previous-line-or-previous-page'. Although the ARG is
+kept here, this function generally works best without ARG is 1.
+To increase the step size for scrolling use the ARG in
+`pdf-continuous-scroll-backward'"
   (if pdf-continuous-scroll-mode
       (let ((hscroll (window-hscroll))
             (cur-page (pdf-view-current-page)))
@@ -134,6 +145,11 @@ at the top edge of the page moves to the previous page."
                (windmove-down)
                (delete-window))))
     (message "pdf-continuous-scroll-mode not activated")))
+
+(defun pdf-continuous-scroll-backward (arg)
+  (interactive "P")
+  (let ((arg (or arg pdf-continuous-step-size)))
+    (dotimes (_ arg) (pdf-continuous-scroll-backward-line 1))))
 
 (defun pdf-continuous-next-page (arg)
   (declare (interactive-only pdf-view-previous-page))
