@@ -31,7 +31,7 @@ You can set the scroll step size via the customizable variable
 =pdf-continuous-step-size=.
 
 Of course any feedback is welcome (possibly by opening an issue in the repo).
-[[pdf-continuous-scroll-demo.gif]]
+# [[pdf-continuous-scroll-demo.gif]]
 
 ** Keybindings
 | Emacs         | Spacemacs         | Function                                         |
