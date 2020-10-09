@@ -35,7 +35,13 @@
 
 (defcustom pdf-continuous-step-size 4
   "Step size in lines (integer) for continuous scrolling"
+  :group 'pdf-continuous-scroll
   :type 'integer)
+
+(defcustom pdf-cs-reverse-scrolling nil
+  "Reverse default scrolling direction"
+  :group 'pdf-continuous-scroll
+  :type 'boolean)
 
 (defun pdf-cscroll-window-dual-p ()
   "Return t if current scroll window status is dual, else nil."
@@ -102,6 +108,12 @@ the step size for scrolling use the ARG in
   (let ((arg (or arg pdf-continuous-step-size)))
     (dotimes (_ arg) (pdf-continuous-scroll-forward-line 1))))
 
+(defun pdf-cs-mouse-scroll-forward ()
+  (interactive)
+  (if pdf-cs-reverse-scrolling
+      (pdf-continuous-scroll-backward nil)
+    (pdf-continuous-scroll-forward nil)))
+
 (defun pdf-continuous-scroll-backward-line (&optional arg)
   "Scroll down by ARG lines if possible, else go to the previous page.
 This function is an adapted version of
@@ -150,6 +162,12 @@ To increase the step size for scrolling use the ARG in
   (interactive "P")
   (let ((arg (or arg pdf-continuous-step-size)))
     (dotimes (_ arg) (pdf-continuous-scroll-backward-line 1))))
+
+(defun pdf-cs-mouse-scroll-backward ()
+  (interactive)
+  (if pdf-cs-reverse-scrolling
+      (pdf-continuous-scroll-forward nil)
+    (pdf-continuous-scroll-backward nil)))
 
 (defun pdf-continuous-next-page (arg)
   (declare (interactive-only pdf-view-previous-page))
@@ -286,6 +304,13 @@ windows."
      '(mode-line ((t (:background "black" :height 0.1)))))
     ))
 
+(defun pdf-cscroll-imenu ()
+  (interactive)
+  (pdf-cscroll-close-window-when-dual)
+  (cond ((fboundp 'counsel-imenu) (counsel-imenu))
+        ((fboundp 'helm-imenu) (helm-imenu))
+        (t (imenu (list (imenu-choose-buffer-index))))))
+
 (defun pdf-cscroll-annot-list-annotations ()
   (interactive)
   (pdf-cscroll-close-window-when-dual)
@@ -295,12 +320,12 @@ windows."
 (setq pdf-continuous-scroll-mode-map (make-sparse-keymap))
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-n") #'pdf-continuous-scroll-forward)
 (define-key pdf-continuous-scroll-mode-map  (kbd "<down>") #'pdf-continuous-scroll-forward)
-(define-key pdf-continuous-scroll-mode-map (kbd "<wheel-down>") #'pdf-continuous-scroll-forward)
-(define-key pdf-continuous-scroll-mode-map  (kbd "<mouse-4>") #'pdf-continuous-scroll-forward)
+(define-key pdf-continuous-scroll-mode-map (kbd "<wheel-down>") #'pdf-cs-mouse-scroll-forward)
+(define-key pdf-continuous-scroll-mode-map  (kbd "<mouse-5>") #'pdf-cs-mouse-scroll-forward)
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-p") #'pdf-continuous-scroll-backward)
 (define-key pdf-continuous-scroll-mode-map  (kbd "<up>") #'pdf-continuous-scroll-backward)
-(define-key pdf-continuous-scroll-mode-map (kbd "<wheel-up>") #'pdf-continuous-scroll-backward)
-(define-key pdf-continuous-scroll-mode-map  (kbd "<mouse-5>") #'pdf-continuous-scroll-backward)
+(define-key pdf-continuous-scroll-mode-map (kbd "<wheel-up>") #'pdf-cs-mouse-scroll-backward)
+(define-key pdf-continuous-scroll-mode-map  (kbd "<mouse-4>") #'pdf-cs-mouse-scroll-backward)
 (define-key pdf-continuous-scroll-mode-map  "n" #'pdf-continuous-next-page)
 (define-key pdf-continuous-scroll-mode-map  "p" #'pdf-continuous-previous-page)
 ;; (define-key pdf-continuous-scroll-mode-map  (kbd "M-<") #'pdf-cscroll-view-goto-page)
@@ -321,9 +346,9 @@ windows."
 (when (boundp 'spacemacs-version)
   (evil-define-minor-mode-key 'evilified 'pdf-continuous-scroll-mode
     "j" #'pdf-continuous-scroll-forward
-    (kbd "<mouse-5>") #'pdf-continuous-scroll-forward
+    (kbd "<mouse-5>") #'pdf-cs-mouse-scroll-forward
     "k" #'pdf-continuous-scroll-backward
-    (kbd "<mouse-4>") #'pdf-continuous-scroll-backward
+    (kbd "<mouse-4>") #'pdf-cs-mouse-scroll-backward
     "J" #'pdf-continuous-next-page
     "K" #'pdf-continuous-previous-page
     (kbd "C-j") #'pdf-view-scroll-up-or-next-page
@@ -332,7 +357,7 @@ windows."
     (kbd "g g") #'pdf-cscroll-first-page
     "G" #'pdf-cscroll-last-page
     "M" #'pdf-cscroll-toggle-mode-line
-    "Q" #'pdf-cscroll-kill-buffer-and-windows
+    "q" #'pdf-cscroll-kill-buffer-and-windows
     "l" #'pdf-cscroll-image-forward-hscroll
     "h" #'pdf-cscroll-image-backward-hscroll)
   (spacemacs/set-leader-keys-for-minor-mode

@@ -1,6 +1,8 @@
-# pdf-continuous-scroll-mode.el
+* pdf-continuous-scroll-mode.el
 A minor mode for Emacs that implements a two-buffer hack to provide continuous
 scrolling in pdf-tools
+
+[[pdf-continuous-scroll-demo.gif]]
 
 This mode works only from Emacs 27 (see [[https://github.com/politza/pdf-tools/issues/27#issuecomment-696237353][here]]). It includes keybindings to just
 work also on Spacemacs.
@@ -47,7 +49,7 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
 | =M-g g/M-g M-g= | =g t=               | pdf-cscroll-view-goto-page                       |
 | =M-<=           | =g g=               | pdf-cscroll-first-page                           |
 | =M->=           | =G=                 | pdf-cscroll-last-page                            |
-| =Q=             | =Q=                 | pdf-cscroll-kill-buffer-and-windows              |
+| =Q=             | =q=                 | pdf-cscroll-kill-buffer-and-windows              |
 | =C-f=           | =l=                 | pdf-cscroll-image-forward-hscroll                |
 | =C-b=           | =h=                 | pdf-cscroll-image-backward-hscroll               |
 | =T=             | =M=                 | pdf-cscroll-toggle-mode-line                     |
