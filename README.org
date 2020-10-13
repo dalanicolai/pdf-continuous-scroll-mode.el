@@ -7,6 +7,8 @@ scrolling in pdf-tools
 This mode works only from Emacs 27 (see [[https://github.com/politza/pdf-tools/issues/27#issuecomment-696237353][here]]). It includes keybindings to just
 work also on Spacemacs.
 
+*Note that (only for linux) the pdf reader that comes with the [[https://github.com/manateelazycat/emacs-application-framework][Emacs application framework]] provides an arguably even better continuous scrolling experience. It also provides a very fine 'real' browser for Emacs. In short, check it out! It looks (and works) quite awesome...*
+
 Probably this minor-mode will get updated a few times over the next days so keep
 your eyes on it, or install it using a [[https://github.com/quelpa/quelpa#by-recipe][Quelpa recipe]]. Spacemacs users can
 install the package (using Quelpa) by adding the following lines to the list of
@@ -36,16 +38,16 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
 # [[pdf-continuous-scroll-demo.gif]]
 
 ** Keybindings
-| Emacs         | Spacemacs         | Function                                         |
-|---------------+-------------------+--------------------------------------------------|
+| Emacs           | Spacemacs           | Function                                         |
+|-----------------+---------------------+--------------------------------------------------|
 | =C-n=           | =j=                 | pdf-continuous-scroll-forward                    |
 | =C-p=           | =k=                 | pdf-continuous-scroll-backward                   |
 | =n=             | =J=                 | pdf-continuous-next-page                         |
 | =p=             | =K=                 | pdf-continuous-previous-page                     |
 | =C-d=           | =C-j=               | pdf-view-scroll-up-or-next-page                  |
-|               |                   | (works on single buffer, but handy for skimming) |
+|                 |                     | (works on single buffer, but handy for skimming) |
 | =C-u=           | =C-k=               | pdf-view-scroll-down-or-previous-page            |
-|               |                   | (idem as previous)                               |
+|                 |                     | (idem as previous)                               |
 | =M-g g/M-g M-g= | =g t=               | pdf-cscroll-view-goto-page                       |
 | =M-<=           | =g g=               | pdf-cscroll-first-page                           |
 | =M->=           | =G=                 | pdf-cscroll-last-page                            |
@@ -53,7 +55,7 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
 | =C-f=           | =l=                 | pdf-cscroll-image-forward-hscroll                |
 | =C-b=           | =h=                 | pdf-cscroll-image-backward-hscroll               |
 | =T=             | =M=                 | pdf-cscroll-toggle-mode-line                     |
-| =M=             |                   | pdf-cscroll-toggle-narrow-mode-line              |
+| =M=             |                     | pdf-cscroll-toggle-narrow-mode-line              |
 | =C-c C-a l=     | =SPC m a l (, a l)= | pdf-cscroll-annot-list-annotations               |
 
 ** Comments
