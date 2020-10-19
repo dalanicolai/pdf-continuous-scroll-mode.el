@@ -9,10 +9,9 @@ work also on Spacemacs.
 
 *Note that (only for linux) the pdf reader that comes with the [[https://github.com/manateelazycat/emacs-application-framework][Emacs application framework]] provides an arguably even better continuous scrolling experience. It also provides a very fine 'real' browser for Emacs. In short, check it out! It looks (and works) quite awesome...*
 
-Probably this minor-mode will get updated a few times over the next days so keep
-your eyes on it, or install it using a [[https://github.com/quelpa/quelpa#by-recipe][Quelpa recipe]]. Spacemacs users can
-install the package (using Quelpa) by adding the following lines to the list of
-=additional packages= in their .spacemacs file:
+To keep this minor-mode updated it is recommended to install it using a [[https://github.com/quelpa/quelpa#by-recipe][Quelpa
+recipe]]. Spacemacs users can install the package (using Quelpa) by adding the
+following lines to the list of =additional packages= in their .spacemacs file:
 #+begin_src emacs-lisp
   (pdf-continuous-scroll-mode :location (recipe
                                          :fetcher github
@@ -24,7 +23,7 @@ Subsequently load the file or add the following lines to your dotfile:
     (require 'pdf-continuous-scroll-mode))
 #+end_src
 Then when you open a file in pdf-tools you can just toggle the mode on and
-of using =M-x pdf-continuous-scroll-mode=. If you like to to start pdf-tools with
+off using =M-x pdf-continuous-scroll-mode=. If you like to start pdf-tools with
 the minor mode activated then add a hook by placing the following lines in your
 dotfile:
 #+begin_src emacs-lisp :tangle yes
@@ -33,6 +32,9 @@ dotfile:
 
 You can set the scroll step size via the customizable variable
 =pdf-continuous-step-size=.
+
+You might like to additionally run =M-x pdf-view-set-slice-from-bounding-box= for some
+"super-continuous scroll".
 
 Of course any feedback is welcome (possibly by opening an issue in the repo).
 # [[pdf-continuous-scroll-demo.gif]]
@@ -47,7 +49,7 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
 | =C-d=           | =C-j=               | pdf-view-scroll-up-or-next-page                  |
 |                 |                     | (works on single buffer, but handy for skimming) |
 | =C-u=           | =C-k=               | pdf-view-scroll-down-or-previous-page            |
-|                 |                     | (idem as previous)                               |
+|                 |                     | (idem)                                           |
 | =M-g g/M-g M-g= | =g t=               | pdf-cscroll-view-goto-page                       |
 | =M-<=           | =g g=               | pdf-cscroll-first-page                           |
 | =M->=           | =G=                 | pdf-cscroll-last-page                            |
