@@ -303,7 +303,7 @@ windows."
            (image-forward-hscroll (- n))
            (windmove-down)
            (image-forward-hscroll (- n)))
-          (t (image-forward-hscroll)))))
+          (t (image-forward-hscroll (- n))))))
 
 (defun pdf-cscroll-toggle-mode-line ()
   (interactive)
