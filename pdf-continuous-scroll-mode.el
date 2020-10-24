@@ -89,9 +89,11 @@ the step size for scrolling use the ARG in
                   (t
                    (if (= (pdf-view-current-page) (pdf-cache-number-of-pages))
                        (message "No such page: %s" (+ (pdf-view-current-page) 1))
-                     (display-buffer-in-direction
+                     (display-buffer
                       (current-buffer)
-                      (cons '(direction . below) '((window-height . 1))))
+                      '((display-buffer-below-selected)
+                        (inhibit-same-window . t)
+                        (window-height . 1)))
                      (set-window-parameter nil 'pdf-scroll-window-status 'upper)
                      (windmove-down)
                      (set-window-parameter nil 'pdf-scroll-window-status 'lower)
