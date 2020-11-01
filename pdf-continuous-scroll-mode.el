@@ -112,8 +112,8 @@ the step size for scrolling use the ARG in
                       (set-window-parameter nil 'pdf-scroll-window-status 'single)))
              (windmove-up)
              (image-next-line 1)
-             (windmove-down))
-  (message "pdf-continuous-scroll-mode not activated"))))
+             (windmove-down)))
+  (message "pdf-continuous-scroll-mode not activated")))
 
 (defun pdf-continuous-scroll-forward (arg)
   (interactive "P")
@@ -182,8 +182,8 @@ To increase the step size for scrolling use the ARG in
                        ((= (window-total-height) (- (frame-height) window-min-height))
                         (set-window-parameter nil 'pdf-scroll-window-status 'single)
                         (windmove-down)
-                        (delete-window)))))
-    (message "pdf-continuous-scroll-mode not activated"))))
+                        (delete-window))))))
+    (message "pdf-continuous-scroll-mode not activated")))
 
 (defun pdf-continuous-scroll-backward (arg)
   (interactive "P")
@@ -355,6 +355,8 @@ windows."
 (define-key pdf-continuous-scroll-mode-map  (kbd "<mouse-4>") #'pdf-cs-mouse-scroll-backward)
 (define-key pdf-continuous-scroll-mode-map  "n" #'pdf-continuous-next-page)
 (define-key pdf-continuous-scroll-mode-map  "p" #'pdf-continuous-previous-page)
+(define-key pdf-continuous-scroll-mode-map (kbd "<prior>") 'pdf-continuous-previous-page)
+(define-key pdf-continuous-scroll-mode-map (kbd "<next>") 'pdf-continuous-next-page)
 ;; (define-key pdf-continuous-scroll-mode-map  (kbd "M-<") #'pdf-cscroll-view-goto-page)
 (define-key pdf-continuous-scroll-mode-map  (kbd "M-g g") #'pdf-cscroll-view-goto-page)
 (define-key pdf-continuous-scroll-mode-map  (kbd "M-g M-g") #'pdf-cscroll-view-goto-page)
@@ -366,6 +368,7 @@ windows."
 (define-key pdf-continuous-scroll-mode-map  [remap left-char] #'pdf-cscroll-image-backward-hscroll)
 (define-key pdf-continuous-scroll-mode-map  "T" #'pdf-cscroll-toggle-mode-line)
 (define-key pdf-continuous-scroll-mode-map  "M" #'pdf-cscroll-toggle-narrow-mode-line)
+(define-key pdf-continuous-scroll-mode-map (kbd "q") '(lambda ()  (interactive) (pdf-continuous-scroll-mode -1)))
 (define-key pdf-continuous-scroll-mode-map  "Q" #'pdf-cscroll-kill-buffer-and-windows)
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-c C-a l") #'pdf-cscroll-annot-list-annotations)
 
