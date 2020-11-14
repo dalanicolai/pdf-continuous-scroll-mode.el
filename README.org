@@ -71,6 +71,8 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
     (and apparently he suggested this pdf-continuous-scroll-hack before)
    
 ** Related projects
+*** pymupdf-mode https://github.com/dalanicolai/pymupdf-mode.el
+    Extend pdf-tools annotation capabilities via pymupdf.
 *** djvu2 https://github.com/dalanicolai/djvu2.el
     Show djvu annotations within Emacs (extending [[https://github.com/emacsmirror/djvu/blob/master/djvu.el][djvu.el]]). There is also a
     [[https://github.com/dalanicolai/djvu-layer][Spacemacs djvu layer]] which additionally [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2020-08/msg01014.html][implements smooth scrolling]] in djvu.
