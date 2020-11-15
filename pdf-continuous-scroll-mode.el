@@ -392,7 +392,11 @@ windows."
     "h" #'pdf-cscroll-image-backward-hscroll)
   (spacemacs/set-leader-keys-for-minor-mode
     'pdf-continuous-scroll-mode
-    (kbd "a l") #'pdf-cscroll-annot-list-annotations))
+    (kbd "a l") #'pdf-cscroll-annot-list-annotations)
+
+  (spacemacs/declare-prefix-for-mode 'pdf-view-mode "mt" "toggles")
+  (spacemacs/set-leader-keys-for-major-mode 'pdf-view-mode "tc" 'pdf-continuous-scroll-mode)
+  )
 
 (define-minor-mode pdf-continuous-scroll-mode
   "Emulate continuous scroll with two synchronized buffers"

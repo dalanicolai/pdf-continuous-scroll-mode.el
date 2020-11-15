@@ -59,6 +59,7 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
 | =T=             | =M=                 | pdf-cscroll-toggle-mode-line                     |
 | =M=             |                     | pdf-cscroll-toggle-narrow-mode-line              |
 | =C-c C-a l=     | =SPC m a l (, a l)= | pdf-cscroll-annot-list-annotations               |
+|                 | =, t c=             | toggle pdf-continuous-scroll-mode                |
 
 ** Comments
    If you like to scroll using the mouse-wheel then you might want to get rid of
