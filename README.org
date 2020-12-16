@@ -17,14 +17,9 @@ following lines to the list of =additional packages= in their .spacemacs file:
                                          :fetcher github
                                          :repo "dalanicolai/pdf-continuous-scroll-mode.el"))
 #+end_src
-Subsequently load the file or add the following lines to your dotfile:
-#+begin_src emacs-lisp
-  (with-eval-after-load 'pdf-view
-    (require 'pdf-continuous-scroll-mode))
-#+end_src
 Then when you open a file in pdf-tools you can just toggle the mode on and
-off using =M-x pdf-continuous-scroll-mode=. If you like to start pdf-tools with
-the minor mode activated then add a hook by placing the following lines in your
+off using =M-x pdf-continuous-scroll-mode= (or simply press =c=). If you like to start pdf-tools with
+the minor mode activated then add a hook by placing the following line in your
 dotfile:
 #+begin_src emacs-lisp :tangle yes
 (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
@@ -59,7 +54,7 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
 | =T=             | =M=                 | pdf-cscroll-toggle-mode-line                     |
 | =M=             |                     | pdf-cscroll-toggle-narrow-mode-line              |
 | =C-c C-a l=     | =SPC m a l (, a l)= | pdf-cscroll-annot-list-annotations               |
-|                 | =, t c=             | toggle pdf-continuous-scroll-mode                |
+| =c=             | =c=                | toggle pdf-continuous-scroll-mode                |
 
 ** Comments
    If you like to scroll using the mouse-wheel then you might want to get rid of

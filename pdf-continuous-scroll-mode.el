@@ -372,6 +372,9 @@ windows."
 (define-key pdf-continuous-scroll-mode-map  "Q" #'pdf-cscroll-kill-buffer-and-windows)
 (define-key pdf-continuous-scroll-mode-map  (kbd "C-c C-a l") #'pdf-cscroll-annot-list-annotations)
 
+;;;###autoload
+(with-eval-after-load 'pdf-view
+  (define-key pdf-view-mode-map  "c" #'pdf-continuous-scroll-mode))
 
 (when (boundp 'spacemacs-version)
   (evil-define-minor-mode-key 'evilified 'pdf-continuous-scroll-mode
@@ -393,11 +396,9 @@ windows."
   (spacemacs/set-leader-keys-for-minor-mode
     'pdf-continuous-scroll-mode
     (kbd "a l") #'pdf-cscroll-annot-list-annotations)
-
-  (spacemacs/declare-prefix-for-mode 'pdf-view-mode "mt" "toggles")
-  (spacemacs/set-leader-keys-for-major-mode 'pdf-view-mode "tc" 'pdf-continuous-scroll-mode)
   )
 
+;;;###autoload
 (define-minor-mode pdf-continuous-scroll-mode
   "Emulate continuous scroll with two synchronized buffers"
   nil
