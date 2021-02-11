@@ -384,8 +384,8 @@ windows."
     (kbd "<mouse-4>") #'pdf-cs-mouse-scroll-backward
     "J" #'pdf-continuous-next-page
     "K" #'pdf-continuous-previous-page
-    (kbd "C-j") #'pdf-view-scroll-up-or-next-page
-    (kbd "C-k") #'pdf-view-scroll-down-or-previous-page
+    ;; (kbd "C-j") #'pdf-view-scroll-up-or-next-page
+    ;; (kbd "C-k") #'pdf-view-scroll-down-or-previous-page
     (kbd "g t") #'pdf-cscroll-view-goto-page
     (kbd "g g") #'pdf-cscroll-first-page
     "G" #'pdf-cscroll-last-page
