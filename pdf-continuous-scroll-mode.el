@@ -43,6 +43,11 @@
   :group 'pdf-continuous-scroll
   :type 'boolean)
 
+(defcustom pdf-cs-custom-min-height nil
+  "Reverse default scrolling direction"
+  :group 'pdf-continuous-scroll
+  :type 'number)
+
 (defun pdf-cscroll-window-dual-p ()
   "Return t if current scroll window status is dual, else nil."
     (or (equal 'upper (alist-get 'pdf-scroll-window-status (window-parameters)))
@@ -135,7 +140,9 @@ To increase the step size for scrolling use the ARG in
 `pdf-continuous-scroll-backward'"
   (if pdf-continuous-scroll-mode
       (let ((hscroll (window-hscroll))
-            (cur-page (pdf-view-current-page)))
+            (cur-page (pdf-view-current-page))
+            (window-min-height (or pdf-cs-custom-min-height
+                                   window-min-height)))
         (print
          (format
           "%s: window-total-height %s, frame-height %s\nnext line: vscroll value, second next line: output value (image-previous-line)"
