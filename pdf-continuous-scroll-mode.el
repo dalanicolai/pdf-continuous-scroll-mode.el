@@ -74,7 +74,8 @@ the step size for scrolling use the ARG in
          (let ((hscroll (window-hscroll))
                (cur-page (pdf-view-current-page)))
 	         (print (format
-                   "%s: window-total-height %s, frame-height %s\nnext line: vscroll value, second next line: output value (image-next-line)"
+                   "%s: window-total-height %s, frame-height %s\n
+next line: vscroll value, second next line: output value (image-next-line)"
                    (alist-get 'pdf-scroll-window-status (window-parameters))
                    (window-total-height)
                    (frame-height))
@@ -145,7 +146,8 @@ To increase the step size for scrolling use the ARG in
                                    window-min-height)))
         (print
          (format
-          "%s: window-total-height %s, frame-height %s\nnext line: vscroll value, second next line: output value (image-previous-line)"
+          "%s: window-total-height %s, frame-height %s\n
+next line: vscroll value, second next line: output value (image-previous-line)"
           (alist-get 'pdf-scroll-window-status (window-parameters))
           (window-total-height)
           (frame-height))
