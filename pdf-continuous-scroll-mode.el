@@ -127,9 +127,11 @@ the step size for scrolling use the ARG in
 
 (defun pdf-cs-mouse-scroll-forward ()
   (interactive)
+  (with-selected-window
+      (or (caadr last-input-event) (selected-window))
   (if pdf-cs-reverse-scrolling
       (pdf-continuous-scroll-backward nil)
-    (pdf-continuous-scroll-forward nil)))
+    (pdf-continuous-scroll-forward nil))))
 
 (defun pdf-continuous-scroll-backward-line (&optional arg)
   "Scroll down by ARG lines if possible, else go to the previous page.
@@ -199,9 +201,11 @@ To increase the step size for scrolling use the ARG in
 
 (defun pdf-cs-mouse-scroll-backward ()
   (interactive)
+  (with-selected-window
+      (or (caadr last-input-event) (selected-window))
   (if pdf-cs-reverse-scrolling
       (pdf-continuous-scroll-forward nil)
-    (pdf-continuous-scroll-backward nil)))
+    (pdf-continuous-scroll-backward nil))))
 
 (defun pdf-continuous-next-page (arg)
   (declare (interactive-only pdf-view-previous-page))
