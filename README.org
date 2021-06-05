@@ -57,17 +57,15 @@ Of course any feedback is welcome (possibly by opening an issue in the repo).
 | =c=             | =c=                 | toggle pdf-continuous-scroll-mode                |
 
 ** Comments
-   =pdf-continuous-scroll-mode= often gets confused when switching between
-   buffers. It is annoying, but I am not sure if that would be easy to fix
-   (maybe I will have a look when I have time, or you are welcome to have a
-   look). Anyway, to get rid of the confusion, just re-activate the mode by
-   pressing =c c= (also remember when Emacs hangs, control can often be regained
-   by pressing =C-g=).
+   - =pdf-continuous-scroll-mode= often gets confused when switching between buffers.
+     It is annoying, but I am not sure if that would be easy to fix
+     (maybe I will have a look when I have time, or you are welcome to have a
+     look). Anyway, to get rid of the confusion, just re-activate the mode by
+     pressing =c c= (also remember when Emacs hangs, control can often be
+     regained by pressing =C-g=).
    
-   If you like to scroll using the mouse-wheel then you might want to get rid of
-   the mode-line using ~pdf-cscroll-toggle-mode-line~, or in vanilla Emacs you
-   might prefer to just narrow down the mode-line using
-   ~pdf-cscroll-toggle-narrow-mode-line~.
+   - If you like to scroll using the mouse-wheel then you might want to get rid of the mode-line using ~pdf-cscroll-toggle-mode-line~,
+     or in vanilla Emacs you might prefer to just narrow down the mode-line using ~pdf-cscroll-toggle-narrow-mode-line~.
 
 *** Related: double page layout
     [[https://github.com/politza/pdf-tools/issues/303#issuecomment-397744326][In this comment]] the user *apnewberry* posted code to realize a double page layout
