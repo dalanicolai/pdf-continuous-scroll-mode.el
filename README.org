@@ -1,3 +1,7 @@
+* Related
+  A proof of concept for 'real' continuous scroll mode (i.e. within a single
+  buffer) can be found [[https://github.com/dalanicolai/vimura-epc][here]]. You are very welcome to hack on it!
+
 * pdf-continuous-scroll-mode.el
 A minor mode for Emacs that implements a two-buffer hack to provide continuous
 scrolling in pdf-tools
