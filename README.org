@@ -1,19 +1,11 @@
-* Related
-  A proof of concept for 'real' continuous scroll mode (i.e. within a single
-  buffer) can be found [[https://github.com/dalanicolai/vimura-epc][here]]. You are very welcome to hack on it!
-
 * pdf-continuous-scroll-mode.el
-A minor mode for Emacs that implements a two-buffer hack to provide continuous
-scrolling in pdf-tools
+A pdf-tools extension that implements continuous scroll.
 
 [[pdf-continuous-scroll-demo.gif]]
 
-This mode works only from Emacs 27 (see [[https://github.com/politza/pdf-tools/issues/27#issuecomment-696237353][here]]). It includes keybindings to just
-work also on Spacemacs.
+It includes keybindings to just work also on Spacemacs.
 
-*Note that (only for linux) the pdf reader that comes with the [[https://github.com/manateelazycat/emacs-application-framework][Emacs application framework]] provides an arguably even better continuous scrolling experience. It also provides a very fine 'real' browser for Emacs. In short, check it out! It looks (and works) quite awesome...*
-
-To keep this minor-mode updated it is recommended to install it using a [[https://github.com/quelpa/quelpa#by-recipe][Quelpa
+To keep this package updated it is recommended to install it using a [[https://github.com/quelpa/quelpa#by-recipe][Quelpa
 recipe]]. Spacemacs users can install the package (using Quelpa) by adding the
 following lines to the list of =additional packages= in their .spacemacs file:
 #+begin_src emacs-lisp
