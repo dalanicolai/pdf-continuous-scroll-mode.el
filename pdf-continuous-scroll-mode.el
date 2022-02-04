@@ -82,10 +82,10 @@
 
 ;; (defmacro book-current-page (&optional win)
 ;;   `(image-mode-window-get 'page ,win))
-(defmacro book-overlays () '(image-mode-window-get 'overlays))
-(defmacro book-image-sizes () '(image-mode-window-get 'image-sizes))
-(defmacro book-image-positions () '(image-mode-window-get 'image-positions))
-(defmacro book-currently-displayed-pages () '(image-mode-window-get 'displayed-pages))
+(defmacro book-overlays (&optional window) `(image-mode-window-get 'overlays ,window))
+(defmacro book-image-sizes (&optional window) `(image-mode-window-get 'image-sizes ,window))
+(defmacro book-image-positions (&optional window) `(image-mode-window-get 'image-positions ,window))
+(defmacro book-currently-displayed-pages (&optional window) `(image-mode-window-get 'displayed-pages ,window))
 
 (defun book-create-image-positions (image-sizes)
   (let ((sum 0)
@@ -523,7 +523,7 @@ image.  These values may be different, if slicing is used."
   (let ((ol (pdf-view-current-overlay window))
         (display-pages (book-page-triplet page)))
     (when (window-live-p (overlay-get ol 'window))
-      (dolist (p (book-currently-displayed-pages))
+      (dolist (p (book-currently-displayed-pages window))
         (unless (member p display-pages)
           (book-remove-page-image p)))
       (dolist (p display-pages)
@@ -540,25 +540,26 @@ image.  These values may be different, if slicing is used."
             (setf (pdf-view-current-image window) image))
           ;; In case the window is wider than the image, center the image
           ;; horizontally.
-          (overlay-put (nth (1- p) (book-overlays)) 'before-string
+          (overlay-put (nth (1- p) (book-overlays window)) 'before-string
                        (when (> (window-width window)
                                 displayed-width)
                          (propertize " " 'display
                                      `(space :align-to
                                              ,(/ (- (window-width window)
                                                     displayed-width) 2)))))
-          (overlay-put (nth (1- p) (book-overlays)) 'display
+          ;; (message "%s %s" p window)
+          (overlay-put (nth (1- p) (book-overlays window)) 'display
                        (if slice
                            (list (cons 'slice
                                        (pdf-util-scale slice size 'round))
                                  image)
                          image))
-          (push p (book-currently-displayed-pages))))
+          (push p (book-currently-displayed-pages window))))
       (let* ((win (overlay-get ol 'window))
              (hscroll (image-mode-window-get 'hscroll win))
              (vscroll (if-let (vs (image-mode-window-get 'relative-vscroll (image-mode-winprops)))
                           (round (* vs
-                                    (car (last (book-image-positions)))))
+                                    (car (last (book-image-positions window)))))
                         (image-mode-window-get 'vscroll win))))
         ;; Reset scroll settings, in case they were changed.
         (if hscroll (set-window-hscroll win hscroll))
@@ -596,7 +597,7 @@ image.  These values may be different, if slicing is used."
                                      (pdf-util-scale slice size 'round))
                                image)
                        image))
-        (let* ((win (print (overlay-get ol 'window)))
+        (let* ((win (overlay-get ol 'window))
                (hscroll (image-mode-window-get 'hscroll win))
                (vscroll (image-mode-window-get 'vscroll win)))
           ;; Reset scroll settings, in case they were changed.
