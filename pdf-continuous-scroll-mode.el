@@ -59,6 +59,27 @@
                          (if (eq (window-buffer) (current-buffer))
                              (selected-window)))))
 
+(defun image-set-window-vscroll (vscroll)
+  (setf (image-mode-window-get 'vscroll) vscroll
+        (image-mode-window-get 'relative-vscroll) (/ (float vscroll)
+                                                     (car (last (book-image-positions)))))
+  (set-window-vscroll (selected-window) vscroll t))
+
+(defun image-mode-reapply-winprops ()
+  ;; When set-window-buffer, set hscroll and vscroll to what they were
+  ;; last time the image was displayed in this window.
+  (when (listp image-mode-winprops-alist)
+    ;; Beware: this call to image-mode-winprops can't be optimized away,
+    ;; because it not only gets the winprops data but sets it up if needed
+    ;; (e.g. it's used by doc-view to display the image in a new window).
+    (let* ((winprops (image-mode-winprops nil t))
+           (hscroll (image-mode-window-get 'hscroll winprops))
+           (vscroll (round (* (image-mode-window-get 'relative-vscroll winprops)
+                              (car (last (book-image-positions)))))))
+      (when (image-get-display-property) ;Only do it if we display an image!
+	      (if hscroll (set-window-hscroll (selected-window) hscroll))
+	      (if vscroll (set-window-vscroll (selected-window) vscroll t))))))
+
 ;; (defmacro book-current-page (&optional win)
 ;;   `(image-mode-window-get 'page ,win))
 (defmacro book-overlays () '(image-mode-window-get 'overlays))
@@ -254,7 +275,7 @@ PNG images in Emacs buffers."
 
 (defun pdf-continuous-introduce ()
   (with-current-buffer (get-buffer-create "*pdf-continuous-introduction*")
-    (insert "NEW PDF CONTINUOUS SCROLL: INTRODUCTION
+    (insert "NEW PDF CONTINUOUS SCROLL: INTRODUCTION            3 February 2022
 
 Welcome to the new pdf-continuous-scroll-mode, now finally
 providing continuous scroll in a single buffer. 🎉🍾
@@ -535,7 +556,10 @@ image.  These values may be different, if slicing is used."
           (push p (book-currently-displayed-pages))))
       (let* ((win (overlay-get ol 'window))
              (hscroll (image-mode-window-get 'hscroll win))
-             (vscroll (image-mode-window-get 'vscroll win)))
+             (vscroll (if-let (vs (image-mode-window-get 'relative-vscroll (image-mode-winprops)))
+                          (round (* vs
+                                    (car (last (book-image-positions)))))
+                        (image-mode-window-get 'vscroll win))))
         ;; Reset scroll settings, in case they were changed.
         (if hscroll (set-window-hscroll win hscroll))
         (if vscroll (set-window-vscroll
@@ -572,13 +596,40 @@ image.  These values may be different, if slicing is used."
                                      (pdf-util-scale slice size 'round))
                                image)
                        image))
-        (let* ((win (overlay-get ol 'window))
+        (let* ((win (print (overlay-get ol 'window)))
                (hscroll (image-mode-window-get 'hscroll win))
                (vscroll (image-mode-window-get 'vscroll win)))
           ;; Reset scroll settings, in case they were changed.
           (if hscroll (set-window-hscroll win hscroll))
           (if vscroll (set-window-vscroll
                        win vscroll pdf-view-have-image-mode-pixel-vscroll)))))))
+
+(defun pdf-view-redisplay (&optional window)
+  "Redisplay page in WINDOW.
+
+If WINDOW is t, redisplay pages in all windows."
+  (unless pdf-view-inhibit-redisplay
+    (if (not (eq t window))
+        (pdf-view-display-page
+         (pdf-view-current-page window)
+         window)
+      (dolist (win (get-buffer-window-list nil nil t))
+        (pdf-view-display-page
+         (pdf-view-current-page win)
+         win))
+      (when (consp image-mode-winprops-alist)
+        (dolist (window (mapcar #'car image-mode-winprops-alist))
+          (unless (or (not (window-live-p window))
+                      (eq (current-buffer)
+                          (window-buffer window)))
+            (setf (pdf-view-window-needs-redisplay window) t)))))
+    (force-mode-line-update)))
+
+(defun pdf-view-redisplay-some-windows ()
+  (pdf-view-maybe-redisplay-resized-windows)
+  (dolist (window (get-buffer-window-list nil nil t))
+    ;; (when (pdf-view-window-needs-redisplay window)
+    (pdf-view-redisplay window)))
 
 (defun pdf-view-new-window-function (winprops)
   ;; TODO: write documentation!
@@ -714,6 +765,64 @@ Stores the region in `pdf-view-active-region'."
             (append pdf-view-active-region
                     (list region)))
       (pdf-view--push-mark))))
+
+
+;;; Fix jump to link (from outline)
+
+(defun pdf-links-action-perform (link)
+  "Follow LINK, depending on its type.
+
+This may turn to another page, switch to another PDF buffer or
+invoke `pdf-links-browse-uri-function'.
+
+Interactively, link is read via `pdf-links-read-link-action'.
+This function displays characters around the links in the current
+page and starts reading characters (ignoring case).  After a
+sufficient number of characters have been read, the corresponding
+link's link is invoked.  Additionally, SPC may be used to
+scroll the current page."
+  (interactive
+   (list (or (pdf-links-read-link-action "Activate link (SPC scrolls): ")
+             (error "No link selected"))))
+  (let-alist link
+    (cl-case .type
+      ((goto-dest goto-remote)
+       (let ((window (selected-window)))
+         (cl-case .type
+           (goto-dest
+            (unless (> .page 0)
+              (error "Link points to nowhere")))
+           (goto-remote
+            (unless (and .filename (file-exists-p .filename))
+              (error "Link points to nonexistent file %s" .filename))
+            (setq window (display-buffer
+                          (or (find-buffer-visiting .filename)
+                              (find-file-noselect .filename))))))
+         (with-selected-window window
+           (when (derived-mode-p 'pdf-view-mode)
+             (when (> .page 0)
+               (pdf-view-goto-page .page))
+             (when .top
+               ;; Showing the tooltip delays displaying the page for
+               ;; some reason (sit-for/redisplay don't help), do it
+               ;; later.
+
+               ;; TODO fix lambda/pdf-util-tooltip-arrow for compatibility with
+               ;; continuous scroll
+               ;; (run-with-idle-timer 0.001 nil
+               ;;                      (lambda ()
+               ;;                        (when (window-live-p window)
+               ;;                          (with-selected-window window
+               ;;                            (when (derived-mode-p 'pdf-view-mode)
+               ;;                              (pdf-util-tooltip-arrow .top))))))
+               )
+             ))))
+      (uri
+       (funcall pdf-links-browse-uri-function .uri))
+      (t
+       (error "Unrecognized link type: %s" .type)))
+    nil))
+
 
 (define-key pdf-view-mode-map  (kbd "C-n") #'pdf-continuous-scroll-forward)
 (define-key pdf-view-mode-map  (kbd "<down>") #'pdf-continuous-scroll-forward)
