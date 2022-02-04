@@ -824,6 +824,43 @@ scroll the current page."
     nil))
 
 
+;;; Fix occur (TODO fix isearch and remove this function)
+
+(defun pdf-occur-goto-occurrence (&optional no-select-window-p)
+  "Go to the occurrence at point.
+
+If EVENT is nil, use occurrence at current line.  Select the
+PDF's window, unless NO-SELECT-WINDOW-P is non-nil.
+
+FIXME: EVENT not used at the moment."
+  (interactive)
+  (let ((item (tabulated-list-get-id)))
+    (when item
+      (let* ((doc (plist-get item :document))
+             (page (plist-get item :page))
+             (match (plist-get item :match-edges))
+             (buffer (if (bufferp doc)
+                         doc
+                       (or (find-buffer-visiting doc)
+                           (find-file-noselect doc))))
+             window)
+        (if no-select-window-p
+            (setq window (display-buffer buffer))
+          (pop-to-buffer buffer)
+          (setq window (selected-window)))
+        (with-selected-window window
+          (when page
+            (pdf-view-goto-page page))
+          ;; Abuse isearch.
+          ;; (when match
+          ;;   (let ((pixel-match
+          ;;          (pdf-util-scale-relative-to-pixel match))
+          ;;         (pdf-isearch-batch-mode t))
+          ;;     (pdf-isearch-hl-matches pixel-match nil t)
+          ;;     (pdf-isearch-focus-match-batch pixel-match)))
+          )))))
+
+
 (define-key pdf-view-mode-map  (kbd "C-n") #'pdf-continuous-scroll-forward)
 (define-key pdf-view-mode-map  (kbd "<down>") #'pdf-continuous-scroll-forward)
 (define-key pdf-view-mode-map (kbd "<wheel-down>") #'pdf-cs-mouse-scroll-forward)

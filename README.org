@@ -41,13 +41,17 @@ You can set the scroll step size via the customizable variable
 # "super-continuous scroll".
 
 ** Comments
-Currently the redisplay functionality does not work correctly yet (e.g.
+- Currently the redisplay functionality does not work correctly yet (e.g.
 splitting buffers does not work correctly yet. Although in Spacemacs the issues
 seem to 'fix themselves' after just doing some scrolling, in vanilla Emacs this
 trick does not seem to work).
 
 As it is not trivial to find out how this functionality works exactly, help or
 donations are very welcome.
+
+- isearch functionality gets broken. However, pdf-occur does work, just without
+  the highlighting because that makes use of isearch functionality.
+
 
 * Contribute
 As investigating how to get things right takes me a lot of time (both doc-view
