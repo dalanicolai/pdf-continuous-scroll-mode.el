@@ -5,6 +5,21 @@ A pdf-tools extension that implements continuous scroll.
 
 It includes keybindings to just work also on Spacemacs.
 
+** Requirements
+To use the new pdf-continuous-scroll-mode, your Emacs must have been compiled
+with SVG support (maybe at some point, me or someone else, will create 'empty
+placeholders' using XPM or PPM images, to eliminate this requirement).
+
+However, compiling Emacs generally is very easy. Just make sure you have the
+=librsvg= development (dev/devel) library installed before compiling.
+
+** Installation
+Note: If, for some reason, you prefer to use the previous two buffer solution
+then you could just download and load the script from e.g. [[https://github.com/dalanicolai/pdf-continuous-scroll-mode.el/tree/615dcfbf7a9b2ff602a39da189e5eb766600047f][this previous commit]].
+
+Note: If you are using git to update the package, then you might want to use
+'reset --hard', as I am frequently using 'push --force'.
+
 To keep this package updated it is recommended to install it using a [[https://github.com/quelpa/quelpa#by-recipe][Quelpa
 recipe]]. Spacemacs users can install the package (using Quelpa) by adding the
 following lines to the list of =additional packages= in their .spacemacs file:
@@ -13,62 +28,81 @@ following lines to the list of =additional packages= in their .spacemacs file:
                                          :fetcher github
                                          :repo "dalanicolai/pdf-continuous-scroll-mode.el"))
 #+end_src
-Then when you open a file in pdf-tools you can just toggle the mode on and
-off using =M-x pdf-continuous-scroll-mode= (or simply press =c=). If you like to start pdf-tools with
-the minor mode activated then add a hook by placing the following line in your
-dotfile:
-#+begin_src emacs-lisp :tangle yes
-(add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
-#+end_src 
+Then just load the package using =use-package= (if you'd like to defer loading),
+=require= or just =M-x load-library=.
+
+Unlike the previous two-buffer implementation, currently this implementation
+does not add an option for toggling the functionality.
 
 You can set the scroll step size via the customizable variable
-=pdf-continuous-step-size=.
+=book-scroll-fraction=.
 
-You might like to additionally run =M-x pdf-view-set-slice-from-bounding-box= for some
-"super-continuous scroll".
+# You might like to additionally run =M-x pdf-view-set-slice-from-bounding-box= for some
+# "super-continuous scroll".
 
-Of course any feedback is welcome (possibly by opening an issue in the repo).
+** Comments
+Currently the redisplay functionality does not work correctly yet (e.g.
+splitting buffers does not work correctly yet. Although in Spacemacs the issues
+seem to 'fix themselves' after just doing some scrolling, in vanilla Emacs this
+trick does not seem to work).
+
+As it is not trivial to find out how this functionality works exactly, help or
+donations are very welcome.
+
+* Contribute
+As investigating how to get things right takes me a lot of time (both doc-view
+and pdf-tools are quite complex packages, and they are almost undocumented
+unfortunately). It really took me weeks to partly unravel how these packages
+work. As I am the extreme opposite of being rich, donations are very welcome
+(you could also have a look at my other packages on my [[https://github.com/dalanicolai][github profile]] page, for
+example the new alternative pdf-server that adds extra annotation features and
+support for EPUB, and some more document types, to pdf-tools).
+
+Comment: Personally, I think the improved functionality quite much increases the
+value of Emacs for research/study purposes
+
+Of course if you know some elisp you could also help investigating/fixing issues
+yourself.
+
+Any feedback is welcome (possibly by opening an issue in the repo).
 # [[pdf-continuous-scroll-demo.gif]]
 
 ** Keybindings
-| Emacs           | Spacemacs           | Function                                         |
-|-----------------+---------------------+--------------------------------------------------|
-| =C-n=           | =j=                 | pdf-continuous-scroll-forward                    |
-| =C-p=           | =k=                 | pdf-continuous-scroll-backward                   |
-| =n=             | =J=                 | pdf-continuous-next-page                         |
-| =p=             | =K=                 | pdf-continuous-previous-page                     |
-| =C-d=           | =C-j=               | pdf-view-scroll-up-or-next-page                  |
-|                 |                     | (works on single buffer, but handy for skimming) |
-| =C-u=           | =C-k=               | pdf-view-scroll-down-or-previous-page            |
-|                 |                     | (idem)                                           |
-| =M-g g/M-g M-g= | =g t=               | pdf-cscroll-view-goto-page                       |
-| =M-<=           | =g g=               | pdf-cscroll-first-page                           |
-| =M->=           | =G=                 | pdf-cscroll-last-page                            |
-| =Q=             | =q=                 | pdf-cscroll-kill-buffer-and-windows              |
-| =C-f=           | =l=                 | pdf-cscroll-image-forward-hscroll                |
-| =C-b=           | =h=                 | pdf-cscroll-image-backward-hscroll               |
-| =T=             | =M=                 | pdf-cscroll-toggle-mode-line                     |
-| =M=             |                     | pdf-cscroll-toggle-narrow-mode-line              |
-| =C-c C-a l=     | =SPC m a l (, a l)= | pdf-cscroll-annot-list-annotations               |
-| =c=             | =c=                 | toggle pdf-continuous-scroll-mode                |
+| Emacs       | Spacemacs           | Function                            |
+|-------------+---------------------+-------------------------------------|
+| =C-n=       | =j=                 | pdf-continuous-scroll-forward       |
+| =C-p=       | =k=                 | pdf-continuous-scroll-backward      |
+| =n=         | =J=                 | pdf-continuous-next-page            |
+| =p=         | =K=                 | pdf-continuous-previous-page        |
+| =M-<=       | =g g=               | pdf-cscroll-first-page              |
+| =M->=       | =G=                 | pdf-cscroll-last-page               |
+| =Q=         | =q=                 | pdf-cscroll-kill-buffer-and-windows |
+| =C-c C-a l= | =SPC m a l (, a l)= | pdf-cscroll-annot-list-annotations  |
+
+# | =C-f=       | =l=                 | pdf-cscroll-image-forward-hscroll   |
+# | =C-b=       | =h=                 | pdf-cscroll-image-backward-hscroll  |
+# | =T=         | =M=                 | pdf-cscroll-toggle-mode-line        |
+# | =M=         |                     | pdf-cscroll-toggle-narrow-mode-line |
+# | =c=         | =c=                 | toggle pdf-continuous-scroll-mode   |
 
 ** Comments
-   If you like to scroll using the mouse-wheel then you might want to get rid of the mode-line using ~pdf-cscroll-toggle-mode-line~,
-   or in vanilla Emacs you might prefer to just narrow down the mode-line using ~pdf-cscroll-toggle-narrow-mode-line~.
 
 *** Related: double page layout
     [[https://github.com/politza/pdf-tools/issues/303#issuecomment-397744326][In this comment]] the user *apnewberry* posted code to realize a double page layout
-    (and apparently he suggested this pdf-continuous-scroll-hack before)
    
 ** Related projects
 *** pymupdf-mode https://github.com/dalanicolai/pymupdf-mode.el
-    Extend pdf-tools annotation capabilities via pymupdf.
-*** djvu2 https://github.com/dalanicolai/djvu2.el
-    Show djvu annotations within Emacs (extending [[https://github.com/emacsmirror/djvu/blob/master/djvu.el][djvu.el]]). There is also a
-    [[https://github.com/dalanicolai/djvu-layer][Spacemacs djvu layer]] which additionally [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2020-08/msg01014.html][implements smooth scrolling]] in djvu.
+    Extend pdf-tools annotation capabilities via pymupdf. The new, alternative,
+    pdf-tools server, will provide the same functionality directly as a
+    pdf-tools feature (including possibility for scripting).
+*** djvu3 https://github.com/dalanicolai/djvu3
+    Show djvu annotations within Emacs (extending [[https://github.com/emacsmirror/djvu/blob/master/djvu.el][djvu.el]], and improving
+    [[https://github.com/dalanicolai/djvu2.el][djvu2.2l]]). There is also a [[https://github.com/dalanicolai/djvu-layer][Spacemacs djvu layer]] which additionally
+    [[https://lists.gnu.org/archive/html/bug-gnu-emacs/2020-08/msg01014.html][implements smooth scrolling]] in djvu.
 *** toc-mode [[https://github.com/dalanicolai/toc-mode]]
-    A package to create and attach Table of contents to pdf and djvu documents.
-    There is also a [[https://github.com/dalanicolai/toc-layer][toc-layer for Spacemacs]]
+    The best way to create and attach Table of contents to pdf and djvu
+    documents. There is also a [[https://github.com/dalanicolai/toc-layer][toc-layer for Spacemacs]]
 *** calibredb https://melpa.org/#/calibredb
     A super nice [[https://calibre-ebook.com/][calibre]] frontend within Emacs
 *** handy or fun Emacs lisp functions https://github.com/dalanicolai/dala-emacs-lisp
+    For example I like the elisp raytracer
