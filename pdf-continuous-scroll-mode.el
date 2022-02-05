@@ -575,7 +575,7 @@ image.  These values may be different, if slicing is used."
                                        (pdf-util-scale slice size 'round))
                                  image)
                          image))
-          (push p (book-currently-displayed-pages window))))
+          (cl-pushnew p (book-currently-displayed-pages window))))
       (let* ((win (overlay-get ol 'window))
              (hscroll (image-mode-window-get 'hscroll win))
              (vscroll (if-let (vs (image-mode-window-get 'relative-vscroll (image-mode-winprops)))
