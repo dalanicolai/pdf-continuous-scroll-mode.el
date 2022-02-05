@@ -44,6 +44,11 @@
   "The size of the vertical margins around a page."
   :type 'integer)
 
+(defcustom pdf-cs-reverse-scrolling nil
+  "Reverse default scrolling direction"
+  :group 'pdf-continuous-scroll
+  :type 'boolean)
+
 (defvar-local book-number-of-pages 0)
 (defvar-local book-contents-end-pos 0)
 
@@ -447,6 +452,22 @@ windows."
                                  ;; :pointer 'arrow
                                  ;; :margin (cons 0 book-page-vertical-margin))))))
   (sit-for 0))
+
+(defun pdf-cs-mouse-scroll-forward ()
+  (interactive)
+  (with-selected-window
+      (or (caadr last-input-event) (selected-window))
+    (if pdf-cs-reverse-scrolling
+        (pdf-continuous-scroll-backward nil)
+      (pdf-continuous-scroll-forward nil))))
+
+(defun pdf-cs-mouse-scroll-backward ()
+  (interactive)
+  (with-selected-window
+      (or (caadr last-input-event) (selected-window))
+    (if pdf-cs-reverse-scrolling
+        (pdf-continuous-scroll-forward nil)
+      (pdf-continuous-scroll-backward nil))))
 
 (defun pdf-continuous-next-page ()
   (interactive)
