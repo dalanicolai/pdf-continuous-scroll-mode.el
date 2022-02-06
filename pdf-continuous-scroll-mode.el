@@ -52,6 +52,18 @@
 (defvar-local book-number-of-pages 0)
 (defvar-local book-contents-end-pos 0)
 
+;; the following function only exists for backward compatibility
+(defun pdf-continuous-scroll-mode ()
+  (print "This is a new version of pdf-continuous-scroll-mode.el
+Despite the name, the `pdf-continuous-scroll-mode' itself has
+been removed. You should make sure that you remove the function
+from the pdf-view-mode-hook. If you prefer to use the previous
+'2-buffer' version, then you can download and load the file from
+the previous commit at
+https://github.com/dalanicolai/pdf-continuous-scroll-mode.el/tree/615dcfbf7a9b2ff602a39da189e5eb766600047f."))
+
+(make-obsolete 'pdf-continuous-scroll-mode nil "3 February 2022")
+
 ;; We overwrite the following image-mode function to make it also
 ;; reapply winprops when the overlay has the 'invisible property
 (defun image-get-display-property ()
@@ -96,6 +108,7 @@
   (let ((sum 0)
         (positions (list 0)))
     (dolist (s image-sizes)
+      ;; the margin is added on both sides
       (setq sum (+ sum (cdr s) (* 2 (or book-page-vertical-margin pdf-view-image-relief))))
       (push sum positions))
     (nreverse positions)))
@@ -144,6 +157,7 @@ Pass non-nil value for include-first when the buffer text starts with a match."
     (1+ i)))
 
 (defun book-page-triplet (page)
+  ;; first handle the cases when the doc has only 1 or two pages
   (pcase (pdf-info-number-of-pages)
     (1 '(1))
     (2 '(1 2))
@@ -153,6 +167,7 @@ Pass non-nil value for include-first when the buffer text starts with a match."
          (p (list (- p 1) p (+ p 1)))))))
 
 (defun book-remove-page-image (page)
+  ;; remove page image means insert back empty image (placeholder)
   (overlay-put (nth (1- page) (book-overlays))
                'display
                (book-create-empty-page (nth (1- page) (book-image-sizes)))))
@@ -162,7 +177,10 @@ Pass non-nil value for include-first when the buffer text starts with a match."
   (interactive "n")
   ;; (book-update-page-triplet page)
   (let* ((elt (1- page)))
-    (set-window-vscroll nil (+ (nth elt (book-image-positions)) (or book-page-vertical-margin pdf-view-image-relief)) t)))
+    (set-window-vscroll nil
+                        (+ (nth elt (book-image-positions))
+                           (or book-page-vertical-margin pdf-view-image-relief))
+                        t)))
 
 (defvar pdf-continuous-suppress-introduction nil)
 
@@ -284,6 +302,13 @@ PNG images in Emacs buffers."
 
 Welcome to the new pdf-continuous-scroll-mode, now finally
 providing continuous scroll in a single buffer. 🎉🍾
+
+Despite the name, the `pdf-continuous-scroll-mode' itself has
+been removed. You should make sure that you remove the function
+from the pdf-view-mode-hook. If you prefer to use the previous
+'2-buffer' version, then you can download and load the file from
+the previous commit at
+https://github.com/dalanicolai/pdf-continuous-scroll-mode.el/tree/615dcfbf7a9b2ff602a39da189e5eb766600047f.
 
 My apologies for this rude interruption, however this behavior is
 only temporary (until this functionality gets merged into
