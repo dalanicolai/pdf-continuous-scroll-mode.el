@@ -5,6 +5,8 @@ A pdf-tools extension that implements continuous scroll.
 
 It includes keybindings to just work also on Spacemacs.
 
+Development notes can be found in [[../../wiki][the wiki section]].
+
 ** Requirements
 To use the new pdf-continuous-scroll-mode, your Emacs must have been compiled
 with SVG support (maybe at some point, me or someone else, will create 'empty
@@ -66,7 +68,8 @@ Comment: Personally, I think the improved functionality quite much increases the
 value of Emacs for research/study purposes
 
 Of course if you know some elisp you could also help investigating/fixing issues
-yourself.
+yourself. To save you a lot of time, you can read the 'development notes' in [[../../wiki][the
+wiki section]].
 
 Any feedback is welcome (possibly by opening an issue in the repo).
 # [[pdf-continuous-scroll-demo.gif]]
