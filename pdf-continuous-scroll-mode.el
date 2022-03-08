@@ -5,7 +5,7 @@
 ;; Author: Daniel Laurens Nicolai <dalanicolai@gmail.com>
 ;; Version: 0
 ;; Keywords: pdf-tools,
-;; Package-Requires: ((emacs "27.1"))
+;; Package-Requires: ((emacs "27.1") (pdf-tools "1.0"))
 ;; URL: https://github.com/dalanicolai/pdf-continuous-scroll-mode.el
 
 
