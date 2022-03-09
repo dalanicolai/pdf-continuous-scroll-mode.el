@@ -1,6 +1,13 @@
 * pdf-continuous-scroll-mode.el
 A pdf-tools extension that implements continuous scroll.
 
+** NOTE: cleaner version available
+There is a little cleaner version, that also, hopefully, works a little better,
+available in the =continuous-scroll-version-3= branch of [[https://github.com/dalanicolai/pdf-tools][my pdf-tools fork]]. I
+hope the install instructions there are sufficiently clear for you to make it
+work. Anyway, check it out...
+
+** Demo
 [[pdf-continuous-scroll-demo.gif]]
 
 It includes keybindings to just work also on Spacemacs.
@@ -9,8 +16,8 @@ Development notes can be found in [[../../wiki][the wiki section]].
 
 ** Requirements
 To use the new pdf-continuous-scroll-mode, your Emacs must have been compiled
-with SVG support (maybe at some point, me or someone else, will create 'empty
-placeholders' using XPM or PPM images, to eliminate this requirement).
+with SVG support (the [[NOTE: cleaner version available][cleaner version]] of [[https://github.com/dalanicolai/pdf-tools][my pdf-tools fork]] eliminates this
+requirement).
 
 However, compiling Emacs generally is very easy. Just make sure you have the
 =librsvg= development (dev/devel) library installed before compiling.
