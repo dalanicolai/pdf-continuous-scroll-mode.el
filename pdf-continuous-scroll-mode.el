@@ -52,6 +52,13 @@
 (defvar-local book-number-of-pages 0)
 (defvar-local book-contents-end-pos 0)
 
+;; (defmacro book-current-page (&optional win)
+;;   `(image-mode-window-get 'page ,win))
+(defmacro book-overlays (&optional window) `(image-mode-window-get 'overlays ,window))
+(defmacro book-image-sizes (&optional window) `(image-mode-window-get 'image-sizes ,window))
+(defmacro book-image-positions (&optional window) `(image-mode-window-get 'image-positions ,window))
+(defmacro book-currently-displayed-pages (&optional window) `(image-mode-window-get 'displayed-pages ,window))
+
 ;; the following function only exists for backward compatibility
 (defun pdf-continuous-scroll-mode ()
   (print "This is a new version of pdf-continuous-scroll-mode.el
@@ -96,13 +103,6 @@ https://github.com/dalanicolai/pdf-continuous-scroll-mode.el/tree/615dcfbf7a9b2f
       (when (image-get-display-property) ;Only do it if we display an image!
 	      (if hscroll (set-window-hscroll (selected-window) hscroll))
 	      (if vscroll (set-window-vscroll (selected-window) vscroll t))))))
-
-;; (defmacro book-current-page (&optional win)
-;;   `(image-mode-window-get 'page ,win))
-(defmacro book-overlays (&optional window) `(image-mode-window-get 'overlays ,window))
-(defmacro book-image-sizes (&optional window) `(image-mode-window-get 'image-sizes ,window))
-(defmacro book-image-positions (&optional window) `(image-mode-window-get 'image-positions ,window))
-(defmacro book-currently-displayed-pages (&optional window) `(image-mode-window-get 'displayed-pages ,window))
 
 (defun book-create-image-positions (image-sizes)
   (let ((sum 0)
