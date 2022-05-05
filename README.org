@@ -1,11 +1,8 @@
 * pdf-continuous-scroll-mode.el
 A pdf-tools extension that implements continuous scroll.
 
-** NOTE: cleaner version available
-There is a little cleaner version, that also, hopefully, works a little better,
-available in the =continuous-scroll-version-3= branch of [[https://github.com/dalanicolai/pdf-tools][my pdf-tools fork]]. I
-hope the install instructions there are sufficiently clear for you to make it
-work. Anyway, check it out...
+** THIS PACKAGE IS DEPRECATED
+A better implementation is provided by the [[https://github.com/dalanicolai/image-roll.el][image-roll]] package.
 
 ** Demo
 [[pdf-continuous-scroll-demo.gif]]

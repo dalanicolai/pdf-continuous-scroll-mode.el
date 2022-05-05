@@ -71,6 +71,41 @@ https://github.com/dalanicolai/pdf-continuous-scroll-mode.el/tree/615dcfbf7a9b2f
 
 (make-obsolete 'pdf-continuous-scroll-mode nil "3 February 2022")
 
+(defun image-mode-winprops (&optional window cleanup)
+  "Return winprops of WINDOW.
+A winprops object has the shape (WINDOW . ALIST).
+WINDOW defaults to `selected-window' if it displays the current buffer, and
+otherwise it defaults to t, used for times when the buffer is not displayed."
+  (cond ((null window)
+         (setq window
+               (if (eq (current-buffer) (window-buffer)) (selected-window) t)))
+        ((eq window t))
+	((not (windowp window))
+	 (error "Not a window: %s" window)))
+  (when-let (o (nth 272 (assq 'overlays (assq window image-mode-winprops-alist))))
+    (message "%s" (image-property (overlay-get o 'display) :type)))
+  (when cleanup
+    (setq image-mode-winprops-alist
+  	  (delq nil (mapcar (lambda (winprop)
+			      (let ((w (car-safe winprop)))
+				(if (or (not (windowp w)) (window-live-p w))
+				    winprop)))
+  			    image-mode-winprops-alist))))
+  (let ((winprops (assq window image-mode-winprops-alist)))
+    ;; For new windows, set defaults from the latest.
+    (if winprops
+        ;; Move window to front.
+        (setq image-mode-winprops-alist
+              (cons winprops (delq winprops image-mode-winprops-alist)))
+      (setq winprops (cons window
+                           (copy-alist (cdar image-mode-winprops-alist))))
+      ;; Add winprops before running the hook, to avoid inf-loops if the hook
+      ;; triggers window-configuration-change-hook.
+      (setq image-mode-winprops-alist
+            (cons winprops image-mode-winprops-alist))
+      (run-hook-with-args 'image-mode-new-window-functions winprops))
+    winprops))
+
 ;; We overwrite the following image-mode function to make it also
 ;; reapply winprops when the overlay has the 'invisible property
 (defun image-get-display-property ()
@@ -130,6 +165,9 @@ Pass non-nil value for include-first when the buffer text starts with a match."
                                (insert "\n ")
                              (forward-char 2))
                            (push (make-overlay (1- (point)) (point)) overlays))))
+      ;; all windows require their overlays to apply to the window only because
+      ;; the windows and therefore bookroll's might have different sizes (see
+      ;; `overlay-properties')
       (mapc (lambda (o) (overlay-put o 'window (car winprops))) overlays-list)
       (image-mode-window-put 'overlays overlays-list winprops)))
   (goto-char (point-min))
@@ -157,7 +195,7 @@ Pass non-nil value for include-first when the buffer text starts with a match."
     (1+ i)))
 
 (defun book-page-triplet (page)
-  ;; first handle the cases when the doc has only 1 or two pages
+  ;; first handle the cases when the doc has only one or two pages
   (pcase (pdf-info-number-of-pages)
     (1 '(1))
     (2 '(1 2))
@@ -394,6 +432,8 @@ Happy scrolling!"
     (goto-char (point-min))))
 
 
+;; Despite what its docstring says, this function does not go to page in all
+;; `pdf-view' windows when WINDOW is non-nil.
 (defun pdf-view-goto-page (page &optional window)
   "Go to PAGE in PDF.
 
@@ -542,11 +582,7 @@ image.  These values may be different, if slicing is used."
 
 (defun pdf-view-display-page (page &optional window)
   "Display page PAGE in WINDOW."
-  (with-selected-window (or window (selected-window))
-    (when (book-overlays)
-      (mapcar #'delete-overlay
-              (book-overlays))
-      (setf (book-overlays) nil))
+  (with-selected-window window
 
     (let* ((image-sizes (let (s)
                           (dotimes (i (pdf-info-number-of-pages) (nreverse s))
@@ -556,11 +592,10 @@ image.  These values may be different, if slicing is used."
       (image-mode-window-put 'image-positions image-positions))
 
     (let ((inhibit-read-only t))
-      (book-create-overlays-list (image-mode-winprops window))
       (book-create-placeholders)))
 
   (setf (pdf-view-window-needs-redisplay window) nil)
-  (setf (pdf-view-current-page window) page)
+  ;; (setf (pdf-view-current-page window) page)
 
   (pdf-view-display-triplet page window))
 
@@ -594,6 +629,7 @@ image.  These values may be different, if slicing is used."
                                              ,(/ (- (window-width window)
                                                     displayed-width) 2)))))
           ;; (message "%s %s" p window)
+          ;; (print (image-property image :type))
           (overlay-put (nth (1- p) (book-overlays window)) 'display
                        (if slice
                            (list (cons 'slice
@@ -601,6 +637,7 @@ image.  These values may be different, if slicing is used."
                                  image)
                          image))
           (cl-pushnew p (book-currently-displayed-pages window))))
+      (image-property (overlay-get (nth (1- page) (book-overlays window)) 'display) :type)
       (let* ((win (overlay-get ol 'window))
              (hscroll (image-mode-window-get 'hscroll win))
              (vscroll (if-let (vs (image-mode-window-get 'relative-vscroll (image-mode-winprops)))
@@ -610,7 +647,8 @@ image.  These values may be different, if slicing is used."
         ;; Reset scroll settings, in case they were changed.
         (if hscroll (set-window-hscroll win hscroll))
         (if vscroll (set-window-vscroll
-                     win vscroll pdf-view-have-image-mode-pixel-vscroll)))
+                           win vscroll pdf-view-have-image-mode-pixel-vscroll)))
+      ;; (setq test-overlay (overlay-properties (nth (1- page) (book-overlays (print window)))))
       (setq currently-displayed-pages display-pages))))
 
 (defun pdf-view-display-image (image &optional window inhibit-slice-p)
@@ -660,6 +698,7 @@ If WINDOW is t, redisplay pages in all windows."
         (pdf-view-display-page
          (pdf-view-current-page window)
          window)
+      (print "hello")
       (dolist (win (get-buffer-window-list nil nil t))
         (pdf-view-display-page
          (pdf-view-current-page win)
@@ -675,8 +714,8 @@ If WINDOW is t, redisplay pages in all windows."
 (defun pdf-view-redisplay-some-windows ()
   (pdf-view-maybe-redisplay-resized-windows)
   (dolist (window (get-buffer-window-list nil nil t))
-    ;; (when (pdf-view-window-needs-redisplay window)
-    (pdf-view-redisplay window)))
+    (when (pdf-view-window-needs-redisplay window)
+      (pdf-view-redisplay window))))
 
 (defun pdf-view-new-window-function (winprops)
   ;; TODO: write documentation!
@@ -870,6 +909,54 @@ scroll the current page."
        (error "Unrecognized link type: %s" .type)))
     nil))
 
+;; (defun pdf-isearch-search-function (string &rest _)
+;;   "Search for STRING in the current PDF buffer.
+
+;; This is a Isearch interface function."
+;;   (when (> (length string) 0)
+;;     (let ((same-search-p (pdf-isearch-same-search-p))
+;;           (oldpage pdf-isearch-current-page)
+;;           (matches (pdf-isearch-search-page string))
+;;           next-match)
+;;       ;; matches is a list of list of edges ((x0 y1 x1 y2) ...),
+;;       ;; sorted top to bottom ,left to right. Coordinates are in image
+;;       ;; space.
+;;       (unless isearch-forward
+;;         (setq matches (reverse matches)))
+;;       (when pdf-isearch-filter-matches-function
+;;         (setq matches (funcall pdf-isearch-filter-matches-function matches)))
+;;       ;; Where to go next ?
+;;       (setq pdf-isearch-current-page (pdf-view-current-page)
+;;             pdf-isearch-current-matches matches
+;;             next-match
+;;             (pdf-isearch-next-match
+;;              oldpage pdf-isearch-current-page
+;;              pdf-isearch-current-match matches
+;;              same-search-p
+;;              isearch-forward)
+;;             pdf-isearch-current-parameter
+;;             (list string isearch-regexp
+;;                   isearch-case-fold-search isearch-word))
+;;       (cond
+;;        (next-match
+;;         (setq pdf-isearch-current-match next-match)
+;;         (pdf-isearch-hl-matches next-match matches)
+;;         (pdf-isearch-focus-match next-match)
+;;         ;; Don't get off track.
+;;         (when (or (and (bobp) (not isearch-forward))
+;;                   (and (eobp) isearch-forward))
+;;           (goto-char (1+ (/ (buffer-size) 2))))
+;;         ;; Signal success to isearch.
+;;         (if isearch-forward
+;;             (re-search-forward ".")
+;;           (re-search-backward ".")))
+;;        ((and (not pdf-isearch-narrow-to-page)
+;;              (not (pdf-isearch-empty-match-p matches)))
+;;         (let ((next-page (pdf-isearch-find-next-matching-page
+;;                           string pdf-isearch-current-page t)))
+;;           (when next-page
+;;             (pdf-view-goto-page next-page)
+;;             (pdf-isearch-search-function string))))))))
 
 ;;; Fix occur (TODO fix isearch and remove this function)
 
@@ -955,3 +1042,5 @@ FIXME: EVENT not used at the moment."
     ))
 
 (provide 'pdf-continuous-scroll-mode)
+
+;;; pdf-continuous-scroll-mode.el ends here
